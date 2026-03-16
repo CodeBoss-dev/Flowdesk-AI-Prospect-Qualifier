@@ -50,12 +50,18 @@ async function fetchCompletion(
   const decoder = new TextDecoder();
   let buffer = '';
   let result = '';
+  const MAX_RESPONSE_BYTES = 50_000;
 
   while (true) {
     const { done, value } = await reader.read();
     if (done) break;
 
     buffer += decoder.decode(value, { stream: true });
+
+    if (result.length > MAX_RESPONSE_BYTES) {
+      reader.cancel();
+      break;
+    }
 
     const lines = buffer.split('\n');
     // Keep the last potentially incomplete line in the buffer
@@ -94,7 +100,8 @@ export async function sendMessage(messages: ChatMessage[]): Promise<string> {
   } catch (error) {
     if (error instanceof GroqError && error.status === 429) {
       // Retry once after delay
-      await new Promise((resolve) => setTimeout(resolve, RATE_LIMIT_RETRY_MS));
+      const jitter = Math.random() * 1000;
+      await new Promise((resolve) => setTimeout(resolve, RATE_LIMIT_RETRY_MS + jitter));
       try {
         return await fetchCompletion(messages, controller.signal);
       } catch {

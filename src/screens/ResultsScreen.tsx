@@ -127,7 +127,7 @@ export function ResultsScreen({ result, onReset }: ResultsScreenProps) {
                     className="flex-1 bg-dark-bg border border-dark-border rounded-lg px-4 py-2.5 text-sm text-white placeholder-dark-muted focus:outline-none focus:border-accent/50"
                   />
                   <Button
-                    disabled={!email.includes('@')}
+                    disabled={!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)}
                     onClick={() => setEmailSubmitted(true)}
                   >
                     Submit

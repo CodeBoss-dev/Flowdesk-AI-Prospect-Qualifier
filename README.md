@@ -52,4 +52,4 @@ src/
 └── screens/        # Landing, Chat, Results screens
 ```
 
-> **Note**: The Groq API key is exposed in the client for demo purposes. In production, use a backend proxy.
+> **Security note**: This is a demo app. The Groq API key (`VITE_GROQ_API_KEY`) is bundled into the client-side JavaScript and is visible to anyone who inspects the network requests or source bundle. Never use a production key or a key with billing limits you can't afford to expose. For production, proxy all Groq requests through a backend server and keep the key server-side only.
